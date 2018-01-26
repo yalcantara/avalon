@@ -76,8 +76,8 @@ class Mat {
                 }
             }
 
-            for (i in 0 until maxRows) {
-                for (j in 0 until maxCols) {
+            for (i in 0 until mr) {
+                for (j in 0 until mc) {
                     if (j > 0) {
                         out.append("  ")
                     }
