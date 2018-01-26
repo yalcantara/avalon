@@ -1,9 +1,8 @@
-package com.avalon.com.avalon.structs
+package com.avalon.structs
 
 import com.avalon.math.MAX_PRINT_COLS
 import com.avalon.math.MAX_PRINT_ROWS
 import java.io.IOException
-import java.text.DecimalFormat
 
 class Grid {
 

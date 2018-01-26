@@ -1,4 +1,4 @@
-package com.avalon.com.avalon.dto
+package com.avalon.dto
 
 class Car {
 
