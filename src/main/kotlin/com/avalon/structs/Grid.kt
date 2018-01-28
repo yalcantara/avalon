@@ -3,6 +3,8 @@ package com.avalon.structs
 import com.avalon.math.MAX_PRINT_COLS
 import com.avalon.math.MAX_PRINT_ROWS
 import java.io.IOException
+import java.util.*
+import kotlin.collections.LinkedHashSet
 
 class Grid {
 
@@ -36,7 +38,18 @@ class Grid {
             for (i in 0 until data.size) {
                 var r = data[i]
 
+                accept(r, i)
                 grid[k]!!.add(r[k])
+            }
+        }
+    }
+
+    private fun accept(r:Map<String, Any?>, i:Int){
+        for(k in r.keys){
+            val e = r[k]
+
+            if(e != null && e !is String && e !is Number){
+                throw IllegalArgumentException("Invalid value: ${e.toString()} in row $i and column $k.");
             }
         }
     }
@@ -45,6 +58,14 @@ class Grid {
         val cols = LinkedHashSet<String>()
         data.forEach { r -> r.keys.forEach { k -> cols.add(k) } }
         return cols
+    }
+
+    fun headers():List<String>{
+        val h = ArrayList<String>()
+
+        grid.keys.forEach{k-> h.add(k)}
+
+        return h
     }
 
     fun header(idx: Int): String {

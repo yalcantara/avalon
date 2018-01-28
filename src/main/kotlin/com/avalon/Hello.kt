@@ -3,6 +3,7 @@ package com.avalon
 import com.avalon.dto.Post
 import com.avalon.etl.PostTransformer
 import com.avalon.structs.Grid
+import com.avalon.structs.GridInfo
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.wnameless.json.flattener.JsonFlattener
@@ -24,6 +25,10 @@ fun main(args: Array<String>) {
     g.print()
     println("size: ${g.rows}")
 
+
+    val info = GridInfo(g)
+
+    info.toGrid().print()
 }
 
 
