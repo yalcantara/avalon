@@ -9,20 +9,20 @@ class Grid {
 
     private val grid: MutableMap<String, MutableList<Any?>> //column Mayor
 
-    var cols:Int =0
-        get()=grid.size
+    var cols: Int = 0
+        get() = grid.size
 
-    var rows:Int = 0
-    get(){
-        if(grid.isEmpty()) return 0
-        return grid.iterator().next().value.size
-    }
+    var rows: Int = 0
+        get() {
+            if (grid.isEmpty()) return 0
+            return grid.iterator().next().value.size
+        }
 
     constructor() {
         grid = LinkedHashMap()
     }
 
-    constructor(data: Array<Map<String, Any>>) {
+    constructor(data: List<Map<String, Any>>) {
         val headers = columns(data)
         grid = LinkedHashMap()
         for (h in headers) {
@@ -41,7 +41,7 @@ class Grid {
         }
     }
 
-    private fun columns(data: Array<Map<String, Any>>): HashSet<String> {
+    private fun columns(data: List<Map<String, Any>>): HashSet<String> {
         val cols = LinkedHashSet<String>()
         data.forEach { r -> r.keys.forEach { k -> cols.add(k) } }
         return cols
@@ -60,6 +60,11 @@ class Grid {
         return grid[col]!![row]
     }
 
+    fun removeColumn(col:Int){
+        val h = header(col)
+        grid.remove(h)
+    }
+
 
     fun print() {
         print(System.out, MAX_PRINT_ROWS, MAX_PRINT_COLS)
@@ -72,19 +77,19 @@ class Grid {
     }
 
 
-    fun format(obj:Any?):String{
-        if(obj == null){
+    fun format(obj: Any?): String {
+        if (obj == null) {
             return "(null)"
         }
 
         var str = ""
-        if(obj!! is String){
+        if (obj!! is String) {
             str = obj as String
-        }else{
+        } else {
             str = obj.toString()
         }
 
-        if(str.length > 60){
+        if (str.length > 60) {
             return str.substring(0, 60)
         }
 
@@ -103,8 +108,15 @@ class Grid {
             }
 
 
-
             val maxLength = IntArray(mc)
+
+
+            for (j in 0 until mc) {
+
+                val str = format(header(j))
+
+                maxLength[j] = Math.max(maxLength[j], str.length)
+            }
 
             for (j in 0 until mc) {
                 for (i in 0 until mr) {
@@ -115,11 +127,37 @@ class Grid {
                 }
             }
 
+
+            line(out, maxLength, mc)
+            out.append('\n')
+            //Headers
+            //=================================================================
+            for (j in 0 until mc) {
+                if (j == 0) {
+                    out.append("¦ ")
+                } else {
+                    out.append(" ")
+                }
+                val h = header(j)
+                val leading = maxLength[j] - h.length
+
+
+                for (s in 0 until leading) {
+                    out.append(" ")
+                }
+
+                out.append(h)
+                out.append(" ¦")
+            }
+            //=================================================================
+            out.append('\n')
+            line(out, maxLength, mc)
+            out.append('\n')
             for (i in 0 until mr) {
                 for (j in 0 until mc) {
                     if (j == 0) {
-                        out.append("| ")
-                    }else{
+                        out.append("¦ ")
+                    } else {
                         out.append(" ")
                     }
                     val str = format(get(i, j))
@@ -131,15 +169,32 @@ class Grid {
                     }
 
                     out.append(str)
-                    out.append(" |")
+                    out.append(" ¦")
                 }
                 out.append("\n")
             }
-
+            line(out, maxLength, mc)
             out.append("\n")
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-
     }
+
+    private fun line(out: Appendable, maxLength: IntArray, maxCols: Int) {
+
+        for (j in 0 until maxCols) {
+            if (j == 0) {
+                out.append("+-")
+            } else {
+                out.append("-")
+            }
+
+            for (s in 0 until maxLength[j]) {
+                out.append("-")
+            }
+
+            out.append("-+")
+        }
+    }
+
 }

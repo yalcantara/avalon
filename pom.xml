@@ -18,7 +18,11 @@
 
     <dependencies>
 
-
+        <dependency>
+            <groupId>com.github.wnameless</groupId>
+            <artifactId>json-flattener</artifactId>
+            <version>0.2.2</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
