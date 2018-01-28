@@ -22,7 +22,7 @@ class Grid {
         grid = LinkedHashMap()
     }
 
-    constructor(data: List<Map<String, Any>>) {
+    constructor(data: List<Map<String, Any?>>) {
         val headers = columns(data)
         grid = LinkedHashMap()
         for (h in headers) {
@@ -41,7 +41,7 @@ class Grid {
         }
     }
 
-    private fun columns(data: List<Map<String, Any>>): HashSet<String> {
+    private fun columns(data: List<Map<String, Any?>>): HashSet<String> {
         val cols = LinkedHashSet<String>()
         data.forEach { r -> r.keys.forEach { k -> cols.add(k) } }
         return cols

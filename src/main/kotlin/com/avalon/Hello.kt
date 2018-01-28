@@ -1,6 +1,7 @@
 package com.avalon
 
 import com.avalon.dto.Post
+import com.avalon.etl.PostTransformer
 import com.avalon.structs.Grid
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -11,22 +12,18 @@ import java.io.FileReader
 fun main(args: Array<String>) {
     val om = jacksonObjectMapper()
 
-    var list: List<Map<String, Any>> = om.readValue(File("files/sp_posts_small.json"))
-
+    var list: List<Post> = om.readValue(File("files/sp_posts_small.json"))
     list = list.subList(0, 10)
 
-    //list = list.map { e -> e["car"] as Map<String, Any> }
+    val trans = PostTransformer()
 
+    val maps = trans.toMap(list)
 
-    var json = list[0]
+    val g = Grid(maps)
 
-    var post = om.convertValue(json, Post::class.java)
+    g.print()
+    println("size: ${g.rows}")
 
-    //println(post)
-
-    var id = json["extractionId"]
-
-    println(post)
 }
 
 

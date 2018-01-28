@@ -15,7 +15,7 @@ class Post {
     var accessories: Set<String>? = null
     var contact: Contact? = null
     var notes: String? = null
-    var creationDate: String?  = null
+    var creationDate: Long?  = null
     var creationDateString: String? = null
 
 }
