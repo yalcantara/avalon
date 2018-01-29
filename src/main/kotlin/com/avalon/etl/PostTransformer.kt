@@ -48,10 +48,10 @@ class PostTransformer {
         m["car.fuelType"] = post.car?.fuelType
         m["car.cylinders"] = post.car?.cylinders
         m["car.litres"] = post.car?.litres
+        m["car.litresStr"] = post.car?.litresStr
         m["car.layout"] = post.car?.layout
         m["car.doors"] = post.car?.doors
         m["car.passengers"] = post.car?.passengers
-        m["car.litresStr"] = post.car?.litresStr
         m["car.type"] = post.car?.type
         m["car.interiorColorStr"] = post.car?.interiorColorStr
 

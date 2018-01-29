@@ -29,6 +29,7 @@ fun main(args: Array<String>) {
     val info = GridInfo(g)
 
     info.toGrid().print()
+
 }
 
 

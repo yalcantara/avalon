@@ -16,11 +16,11 @@ class GridInfo {
     val absum: Map<String, Double?>
     val variance: Map<String, Double?>
     val stdev: Map<String, Double?>
-    /*private val positives: Map<String, Int?>
+    private val positives: Map<String, Int?>
     private val negatives: Map<String, Int?>
 
-    private val integers: Map<String, Int>
-    private val decimals: Map<String, Int>
+    private val integers: Map<String, Int?>
+    /*private val decimals: Map<String, Int>
     private val nans: Map<String, Int>
     private val ninfinites: Map<String, Int>
     private val pinfinites: Map<String, Int>
@@ -37,22 +37,28 @@ class GridInfo {
         val max = LinkedHashMap<String, Double?>()
         val min = LinkedHashMap<String, Double?>()
         val avg = LinkedHashMap<String, Double?>()
-
         val sum = LinkedHashMap<String, Double?>()
         val absum = LinkedHashMap<String, Double?>()
         val variance = LinkedHashMap<String, Double?>()
         val stdev = LinkedHashMap<String, Double?>()
+        val positives = LinkedHashMap<String, Int?>()
+        val negatives = LinkedHashMap<String, Int?>()
+
+        val integers = LinkedHashMap<String, Int?>()
 
         for (k in g.headers()) {
 
             max[k] = computeMax(g, k)
             min[k] = computeMin(g, k)
             avg[k] = computeAvg(g, k)
-
             sum[k] = computeSum(g, k)
             absum[k] = computeAbsum(g, k)
             variance[k] = computeVariance(g, k)
             stdev[k] = computeStdev(variance, k)
+            positives[k] = computePositives(g, k)
+            negatives[k] = computeNegatives(g, k)
+
+            integers[k] = computeIntegers(g, k)
         }
 
 
@@ -61,11 +67,14 @@ class GridInfo {
         this.max = Collections.unmodifiableMap(max)
         this.min = Collections.unmodifiableMap(min)
         this.avg = Collections.unmodifiableMap(avg)
-
         this.sum = Collections.unmodifiableMap(sum)
         this.absum = Collections.unmodifiableMap(absum)
         this.variance = Collections.unmodifiableMap(variance)
         this.stdev = Collections.unmodifiableMap(stdev)
+        this.positives = Collections.unmodifiableMap(positives)
+        this.negatives = Collections.unmodifiableMap(negatives)
+
+        this.integers = Collections.unmodifiableMap(integers)
     }
 
 
@@ -98,6 +107,12 @@ class GridInfo {
         }
 
         ans = (e as Number).toDouble()
+
+        if (ans == Double.NaN ||
+                ans == Double.POSITIVE_INFINITY ||
+                ans == Double.NEGATIVE_INFINITY) {
+            return null
+        }
 
         return ans
     }
@@ -248,30 +263,140 @@ class GridInfo {
         return stdev
     }
 
+    private fun computePositives(g: Grid, k: String): Int? {
+
+        var count: Int? = null
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            val d: Double? = verifyDouble(e)
+            if (d == null) {
+                continue
+            }
+
+            if(d > 0) {
+                if(count == null){
+                    count = 1
+                }else{
+                    count++
+                }
+            }
+        }
+        return count
+    }
+
+    private fun computeNegatives(g: Grid, k: String): Int? {
+
+        var count: Int? = null
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            val d: Double? = verifyDouble(e)
+            if (d == null) {
+                continue
+            }
+
+            if(d < 0) {
+                if(count == null){
+                    count = 1
+                }else{
+                    count++
+                }
+            }
+        }
+        return count
+    }
+
+    private fun computeIntegers(g: Grid, k: String): Int? {
+
+        var count: Int? = null
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            if(e == null || e == ""){
+                continue
+            }
+
+            if(k == "car.litresStr"){
+                val r = 0
+            }
+
+            val ival: Int
+            val dval: Double
+            val tval: Double
+            if(e is String){
+                try{
+                    dval = e.toDouble()
+                    ival = dval.toInt()
+                    tval = ival.toDouble()
+                }catch(ex:NumberFormatException){
+                    continue
+                }
+            }else if(e is Number){
+
+                dval = e.toDouble()
+                ival = dval.toInt()
+                tval = ival.toDouble()
+            }else{
+                throw IllegalArgumentException("Only String and Numeric values are allowed. Column: $k, row: $i.")
+            }
+
+
+            if(dval == tval){
+                if(count == null){
+                    count = 1
+                }else{
+                    count++
+                }
+            }
+        }
+        return count
+    }
+
+
 
     fun toGrid():Grid{
 
 
 
         val max = LinkedHashMap<String, Any?>()
-        max["Name"] = "Maximum"
+        max[""] = "Maximum"
         rowInfo(this.max, max)
 
         val min = LinkedHashMap<String, Any?>()
-        min["Name"] = "Minimum"
+        min[""] = "Minimum"
         rowInfo(this.min, min)
 
         val avg = LinkedHashMap<String, Any?>()
-        avg["Name"] = "Average"
+        avg[""] = "Average"
         rowInfo(this.avg, avg)
 
+        val sum = LinkedHashMap<String, Any?>()
+        sum[""] = "Sum"
+        rowInfo(this.sum, sum)
+
+        val absum = LinkedHashMap<String, Any?>()
+        absum[""] = "Absolute Sum"
+        rowInfo(this.absum, absum)
+
         val variance = LinkedHashMap<String, Any?>()
-        variance["Name"] = "Variance"
+        variance[""] = "Variance"
         rowInfo(this.variance, variance)
 
         val stdev = LinkedHashMap<String, Any?>()
-        stdev["Name"] = "Standard Dev."
+        stdev[""] = "Standard Dev."
         rowInfo(this.stdev, stdev)
+
+        val positives = LinkedHashMap<String, Any?>()
+        positives[""] = "Positives"
+        rowInfo(this.positives, positives)
+
+        val negatives = LinkedHashMap<String, Any?>()
+        negatives[""] = "Negatives"
+        rowInfo(this.negatives, negatives)
+
+
+        //=====================================================================
+        val integers = LinkedHashMap<String, Any?>()
+        integers[""] = "Integers"
+        rowInfo(this.integers, integers)
 
 
 
@@ -281,9 +406,14 @@ class GridInfo {
         list.add(max)
         list.add(min)
         list.add(avg)
+        list.add(sum)
+        list.add(absum)
         list.add(variance)
         list.add(stdev)
+        list.add(positives)
+        list.add(negatives)
 
+        list.add(integers)
 
         val g = Grid(list)
 
