@@ -81,6 +81,10 @@ class Grid {
         return grid[col]!![row]
     }
 
+    operator fun set(row: Int, col: String, ele: Any?) {
+        grid[col]!![row] = ele
+    }
+
     fun removeColumn(col:Int){
         val h = header(col)
         grid.remove(h)

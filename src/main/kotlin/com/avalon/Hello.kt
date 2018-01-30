@@ -6,11 +6,25 @@ import com.avalon.structs.Grid
 import com.avalon.structs.GridInfo
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.wnameless.json.flattener.JsonFlattener
 import java.io.File
 import java.io.FileReader
 
 fun main(args: Array<String>) {
+    start2()
+}
+
+fun start1(){
+    val a = Double.NaN
+
+    val b = (a as Number).toDouble()
+
+    b.isInfinite()
+    if(a == Double.NaN){
+        println("klk")
+    }
+}
+
+fun start2(){
     val om = jacksonObjectMapper()
 
     var list: List<Post> = om.readValue(File("files/sp_posts_small.json"))
@@ -22,6 +36,12 @@ fun main(args: Array<String>) {
 
     val g = Grid(maps)
 
+    g[0, "price"] = Double.NaN
+    g[1, "price"] = 0.0
+    g[2, "price"] = ""
+    g[3, "price"] = Double.POSITIVE_INFINITY
+    g[4, "price"] = Double.POSITIVE_INFINITY
+    g[5, "price"] = Double.POSITIVE_INFINITY
     g.print()
     println("size: ${g.rows}")
 
@@ -29,11 +49,10 @@ fun main(args: Array<String>) {
     val info = GridInfo(g)
 
     info.toGrid().print()
-
 }
 
 
-fun load():String{
+fun load(): String {
 
     val f = File("files/sp_posts_small.json")
 
