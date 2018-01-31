@@ -28,10 +28,10 @@ class GridInfo {
 
     private val words: Map<String, Int>
     private val empties: Map<String, Int>
-    /*private val nulls: Map<String, Int>
-    private val maxWord: Map<String, String?>
-    private val minWord: Map<String, String?>
-*/
+    private val nulls: Map<String, Int>
+    private val maxWordLength: Map<String, Int?>
+    private val minWordLength: Map<String, Int?>
+
 
     constructor(g: Grid) {
 
@@ -54,6 +54,9 @@ class GridInfo {
 
         val words = LinkedHashMap<String, Int>()
         val empties = LinkedHashMap<String, Int>()
+        val nulls = LinkedHashMap<String, Int>()
+        val maxWordLength = LinkedHashMap<String, Int?>()
+        val minWordLength = LinkedHashMap<String, Int?>()
 
         for (k in g.headers()) {
 
@@ -76,6 +79,9 @@ class GridInfo {
 
             words[k] = computeWords(g, k)
             empties[k] = computeEmpties(g, k)
+            nulls[k] = computeNulls(g, k)
+            maxWordLength[k] = computeMaxWordLength(g, k)
+            minWordLength[k] = computeMinWordLength(g, k)
         }
 
 
@@ -100,6 +106,9 @@ class GridInfo {
 
         this.words = Collections.unmodifiableMap(words)
         this.empties = Collections.unmodifiableMap(empties)
+        this.nulls = Collections.unmodifiableMap(nulls)
+        this.maxWordLength = Collections.unmodifiableMap(maxWordLength)
+        this.minWordLength = Collections.unmodifiableMap(minWordLength)
     }
 
 
@@ -473,23 +482,34 @@ class GridInfo {
         return count
     }
 
+    protected fun isWord(e:Any):Boolean{
+        if(e == ""){
+            return false
+        }
+
+        if(e is String){
+            try{
+                e.toDouble()
+                return false
+            }catch (ex: NumberFormatException){
+                return true
+            }
+        }
+
+        return false
+    }
+
     private fun computeWords(g: Grid, k: String): Int {
 
         var count: Int = 0
         for (i in 0 until g.rows) {
             val e = g[i, k]
-            if(e == null || e == ""){
+            if(e == null){
                 continue
             }
 
-            if(e is String){
-                try{
-                    e.toDouble()
-                    continue
-                }catch (ex: NumberFormatException){
-                    //if it isn't  Double, then is a word
-                    count++
-                }
+            if(isWord(e)){
+                count++
             }
         }
 
@@ -503,6 +523,63 @@ class GridInfo {
             val e = g[i, k]
             if(e != null && e == ""){
                 count++
+            }
+        }
+
+        return count
+    }
+
+    private fun computeNulls(g: Grid, k: String): Int {
+
+        var count: Int = 0
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            if(e == null){
+                count++
+            }
+        }
+
+        return count
+    }
+
+    private fun computeMaxWordLength(g: Grid, k: String): Int? {
+
+        var count: Int? = null
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            if(e == null){
+                continue
+            }
+
+            if(isWord(e)){
+                val l = (e as String).length
+                if(count == null){
+                    count = l
+                }else{
+                    count = Math.max(count, l)
+                }
+            }
+        }
+
+        return count
+    }
+
+    private fun computeMinWordLength(g: Grid, k: String): Int? {
+
+        var count: Int? = null
+        for (i in 0 until g.rows) {
+            val e = g[i, k]
+            if(e == null){
+                continue
+            }
+
+            if(isWord(e)){
+                val l = (e as String).length
+                if(count == null){
+                    count = l
+                }else{
+                    count = Math.min(count, l)
+                }
             }
         }
 
@@ -586,6 +663,18 @@ class GridInfo {
         empties[""] = "Empties"
         rowInfo(this.empties, empties)
 
+        val nulls = LinkedHashMap<String, Any?>()
+        nulls[""] = "Nulls"
+        rowInfo(this.nulls, nulls)
+
+        val maxWordLength = LinkedHashMap<String, Any?>()
+        maxWordLength[""] = "Max Word Length"
+        rowInfo(this.maxWordLength, maxWordLength)
+
+        val minWordLength = LinkedHashMap<String, Any?>()
+        minWordLength[""] = "Min Word Length"
+        rowInfo(this.minWordLength, minWordLength)
+
         val list = ArrayList<Map<String, Any?>>()
 
 
@@ -608,6 +697,9 @@ class GridInfo {
 
         list.add(words)
         list.add(empties)
+        list.add(nulls)
+        list.add(maxWordLength)
+        list.add(minWordLength)
 
         val g = Grid(list)
 

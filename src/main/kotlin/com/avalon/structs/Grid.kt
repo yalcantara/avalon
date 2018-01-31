@@ -3,6 +3,8 @@ package com.avalon.structs
 import com.avalon.math.MAX_PRINT_COLS
 import com.avalon.math.MAX_PRINT_ROWS
 import java.io.IOException
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
@@ -90,6 +92,11 @@ class Grid {
         grid.remove(h)
     }
 
+    fun info():GridInfo{
+        return GridInfo(this)
+    }
+
+
 
     fun print() {
         print(System.out, MAX_PRINT_ROWS, MAX_PRINT_COLS)
@@ -102,7 +109,7 @@ class Grid {
     }
 
 
-    fun format(obj: Any?): String {
+    fun format(nf: NumberFormat, obj: Any?): String {
         if (obj == null) {
             return "(null)"
         }
@@ -111,7 +118,20 @@ class Grid {
         if (obj!! is String) {
             str = obj as String
         } else {
-            str = obj.toString()
+            val n = obj as Number
+
+            if(n is Double && n.isNaN() || n is Float && n.isNaN()){
+                return "(NaN)"
+            }
+
+            if(n is Double && n.isInfinite() && n < 0){
+                return "(-Infinite)"
+            }
+
+            if(n is Double && n.isInfinite() && n > 0){
+                return "(+Infinite)"
+            }
+            str = nf.format(n)
         }
 
         if (str.length > 60) {
@@ -136,9 +156,14 @@ class Grid {
             val maxLength = IntArray(mc)
 
 
+            val nf = DecimalFormat()
+            nf.minimumFractionDigits = 2
+            nf.maximumFractionDigits = 2
+
+
             for (j in 0 until mc) {
 
-                val str = format(header(j))
+                val str = format(nf, header(j))
 
                 maxLength[j] = Math.max(maxLength[j], str.length)
             }
@@ -146,7 +171,7 @@ class Grid {
             for (j in 0 until mc) {
                 for (i in 0 until mr) {
 
-                    val str = format(get(i, j))
+                    val str = format(nf, get(i, j))
 
                     maxLength[j] = Math.max(maxLength[j], str.length)
                 }
@@ -185,7 +210,7 @@ class Grid {
                     } else {
                         out.append(" ")
                     }
-                    val str = format(get(i, j))
+                    val str = format(nf, get(i, j))
                     val leading = maxLength[j] - str.length
 
 

@@ -10,7 +10,22 @@ import java.io.File
 import java.io.FileReader
 
 fun main(args: Array<String>) {
-    start2()
+    start3()
+}
+
+fun start3(){
+    val om = jacksonObjectMapper()
+
+    var list: List<Post> = om.readValue(File("files/sp_posts_small.json"))
+    list = list.subList(0, 10)
+
+    val trans = PostTransformer()
+
+    val maps = trans.toMap(list)
+
+    val g = Grid(maps)
+
+
 }
 
 fun start1(){
@@ -37,9 +52,9 @@ fun start2(){
     val g = Grid(maps)
 
     g[0, "price"] = Double.NaN
-    g[1, "price"] = 0.0
-    g[2, "price"] = ""
-    g[3, "price"] = Double.POSITIVE_INFINITY
+    g[1, "price"] = null
+    g[2, "price"] = null
+    g[3, "price"] = Double.NEGATIVE_INFINITY
     g[4, "price"] = Double.POSITIVE_INFINITY
     g[5, "price"] = Double.POSITIVE_INFINITY
     g.print()
