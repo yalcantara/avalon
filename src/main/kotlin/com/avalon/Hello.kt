@@ -17,7 +17,7 @@ fun start3(){
     val om = jacksonObjectMapper()
 
     var list: List<Post> = om.readValue(File("files/sp_posts_small.json"))
-    list = list.subList(0, 10)
+    //list = list.subList(0, 1000)
 
     val trans = PostTransformer()
 
@@ -25,7 +25,8 @@ fun start3(){
 
     val g = Grid(maps)
 
-
+    val info = g.info()
+    info.print()
 }
 
 fun start1(){

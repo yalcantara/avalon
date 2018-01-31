@@ -716,4 +716,8 @@ class GridInfo {
         }
     }
 
+    fun print(){
+        toGrid().print()
+    }
+
 }
